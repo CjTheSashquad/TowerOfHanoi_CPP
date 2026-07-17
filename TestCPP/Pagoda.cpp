@@ -58,7 +58,6 @@ int main() {
 
     for (int i = n; i > 0; i--) fromRod.push_back(i);
 
-    cout << "\nInitial State:"; 
     printRods(fromRod, auxRod, toRod);
 
     cout << "---------------------------------------------------";
