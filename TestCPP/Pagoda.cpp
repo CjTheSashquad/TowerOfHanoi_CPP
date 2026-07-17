@@ -17,10 +17,14 @@ void towerOfHanoi(int n, string fromRod, string toRod, string auxRod, int& nMove
 }
 
 int main() {
-    int n = 4;                   
+    int n = 0;                   
     int moves = 0;
 
-    cout << "Tower of Hanoi with " << n << " disks:\n\n";
+    cout << "Enter number of disk : ";
+    cin >> n;
+
+    cout << "\n\n---------------------------------------------------";
+    cout << "\nTower of Hanoi with " << n << " disks:\n\n";
     towerOfHanoi(n, "Source Rod", "End Rod", "Support Rod", moves);
 
     cout << "\nNumber of moves required = " << moves << endl;
