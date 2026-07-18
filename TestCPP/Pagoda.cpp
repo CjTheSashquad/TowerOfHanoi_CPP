@@ -1,56 +1,62 @@
 #include <iostream>
 #include <vector>
+#include <string>
 using namespace std;
 
-void printRods(const vector<int>& fromRod, const vector<int>& auxRod, const vector<int>& toRod) {
-    auto printRod = [](const string& name, const vector<int>& rod) {
-        cout << name << "[";
-        for (size_t i = 0; i < rod.size(); i++) {
-            cout << rod[i];
-            if (i != rod.size() - 1) cout << ",";
+struct Rod {
+    string name;
+    vector<string> disks;
+};
+
+void printRods(const Rod& r1, const Rod& r2, const Rod& r3) {
+    auto printRod = [](const Rod&r) {
+        cout << r.name << "[";
+        for (size_t i = 0; i < r.disks.size(); i++) {
+            cout << r.disks[i];
+            if (i != r.disks.size() - 1) cout << ",";
         }
         cout << "]";
         };
 	cout << "Current Stacks: ";
-    printRod("Source", fromRod);
+    printRod(r1);
     cout << " | ";
-    printRod("Support", auxRod);
+    printRod(r2);
     cout << " | ";
-    printRod("End", toRod);
+    printRod(r3);
     cout << endl << "\n";
 };
 
-void towerOfHanoi(int n,
-    vector<int>& fromRod, vector<int>& toRod, vector<int>& auxRod,
-    const string& fromName, const string& toName, const string& auxName,
-    int& nMove) {
+void towerOfHanoi(int n, Rod& from, Rod& to, Rod& aux, Rod& source, Rod& support, Rod& end, int& nMove) {
 
     if (n == 1) {
-        int disk = fromRod.back();
-        fromRod.pop_back();
-        toRod.push_back(disk);
+        string disk = from.disks.back();
+        from.disks.pop_back();
+        to.disks.push_back(disk);
         nMove++;
-        cout << "Move " << nMove << ": disk " << disk << " from " << fromName << " to " << toName << "\n";
-        printRods(fromRod, auxRod, toRod);
+        cout << "Move " << nMove << ": " << disk << " from " << from.name << " to " << to.name << "\n";        
+        printRods(source, support, end);
         return;
     }
 
-    towerOfHanoi(n - 1, fromRod, auxRod, toRod, fromName, auxName, toName, nMove);
+    towerOfHanoi(n - 1, from, aux, to, source, support, end, nMove);
 
-    int disk = fromRod.back();
-    fromRod.pop_back();
-    toRod.push_back(disk);
+    string disk = from.disks.back();
+    from.disks.pop_back();
+    to.disks.push_back(disk);
     nMove++;
-    cout << "Move " << nMove << ": disk " << disk << " from " << fromName << " to " << toName << "\n";
-    printRods(fromRod, auxRod, toRod);
+    cout << "Move " << nMove << ": " << disk << " from " << from.name << " to " << to.name << "\n";
+    printRods(source, support, end);
 
-    towerOfHanoi(n - 1, auxRod, toRod, fromRod, auxName, toName, fromName, nMove);
+    towerOfHanoi(n - 1, aux, to, from, source, support, end, nMove);
 }
 
 int main() {
     int n = 0, moves = 0, max = 15;
     bool input = false;
-    vector<int> fromRod, auxRod, toRod;
+
+    Rod source{ "Source", {} };
+    Rod support{ "Support", {} };
+    Rod end{ "End", {} };
 
 	while(input == false) {
 		cout << "Enter number of disk : ";
@@ -72,14 +78,14 @@ int main() {
         return 0;
     }
 
-    for (int i = n; i > 0; i--) fromRod.push_back(i);
+    for (int i = n; i > 0; i--) source.disks.push_back("disk " + to_string(i));
 
-    printRods(fromRod, auxRod, toRod);
+    printRods(source, support, end);
 
     cout << "---------------------------------------------------";
     cout << "\nTower of Hanoi with " << n << " disks:\n\n";
 
-    towerOfHanoi(n, fromRod, toRod, auxRod, "Source", "End", "Support", moves);
+    towerOfHanoi(n, source, end, support, source, support, end, moves);
 
     cout << "\nNumber of moves required = " << moves << endl;
     return 0;
